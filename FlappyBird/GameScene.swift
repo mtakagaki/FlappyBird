@@ -14,18 +14,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scrollNode:SKNode!
     var wallNode:SKNode!
     var bird:SKSpriteNode!
+    var heart:SKNode!
     
     // 衝突判定カテゴリー
     let birdCategory: UInt32 = 1 << 0       // 0...00001
     let groundCategory: UInt32 = 1 << 1     // 0...00010
     let wallCategory: UInt32 = 1 << 2       // 0...00100
     let scoreCategory: UInt32 = 1 << 3      // 0...01000
+    let itemCategory: UInt32 = 1  << 4      // 0...10000
 
     // スコア用
     var score = 0
     var scoreLabelNode:SKLabelNode!
     var bestScoreLabelNode:SKLabelNode!
     let userDefaults:UserDefaults = UserDefaults.standard
+    
+    //アイテム追加
+    var item = 0
+    var itemLabelNode: SKLabelNode!
 
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
@@ -49,8 +55,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupGround()
         setupCloud()
         setupWall()
+        setupHeart()
         setupBird()
         setupScoreLabel()
+        setupItemLabel()
     }
 
     func setupGround() {
@@ -135,6 +143,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func setupHeart(){
+        //ハートの画像を読み込む
+        let heartTexture = SKTexture(imageNamed: "heart")
+        heartTexture.filteringMode = .nearest
+        
+        // 移動する距離を計算
+        let movingDistance = CGFloat(self.frame.size.width + heartTexture.size().width)
+
+        // 画面外まで移動するアクションを作成
+        let moveHeart = SKAction.moveBy(x: -movingDistance, y: 0, duration:4)
+
+        // 自身を取り除くアクションを作成
+        let removeHeart = SKAction.removeFromParent()
+        
+        // 2つのアニメーションを順に実行するアクションを作成
+        let heartAnimation = SKAction.sequence([moveHeart, removeHeart])
+
+        
+
+        
+        
+    }
+    
     func setupWall() {
            // 壁の画像を読み込む
            let wallTexture = SKTexture(imageNamed: "wall")
@@ -215,9 +246,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
               wall.addChild(scoreNode)
 
-               wall.run(wallAnimation)
+              wall.run(wallAnimation)
 
-               self.wallNode.addChild(wall)
+              self.wallNode.addChild(wall)
            })
 
            // 次の壁作成までの時間待ちのアクションを作成
@@ -248,12 +279,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height / 2)
         
         // 衝突した時に回転させない
-        bird.physicsBody?.allowsRotation = false    // ←追加
+        bird.physicsBody?.allowsRotation = false
 
         // 衝突のカテゴリー設定
-        bird.physicsBody?.categoryBitMask = birdCategory    // ←追加
-        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory    // ←追加
-        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory    // ←追加
+        bird.physicsBody?.categoryBitMask = birdCategory
+        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
+        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory
 
 
         // アニメーションを設定
@@ -348,6 +379,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let bestScore = userDefaults.integer(forKey: "BEST")
         bestScoreLabelNode.text = "Best Score:\(bestScore)"
         self.addChild(bestScoreLabelNode)
+    }
+    
+    func setupItemLabel() {
+        item = 0
+        itemLabelNode = SKLabelNode()
+        itemLabelNode.fontColor = UIColor.black
+        itemLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 120)
+        itemLabelNode.zPosition = 100
+        itemLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        itemLabelNode.text = "Item:\(item)"
+        self.addChild(itemLabelNode)
     }
 
 }
