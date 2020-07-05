@@ -14,7 +14,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scrollNode:SKNode!
     var wallNode:SKNode!
     var bird:SKSpriteNode!
-    var heart:SKNode!
+    var heartNode:SKNode!
     
     // 衝突判定カテゴリー
     let birdCategory: UInt32 = 1 << 0       // 0...00001
@@ -50,6 +50,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // 壁用のノード
         wallNode = SKNode()
         scrollNode.addChild(wallNode)
+        
+        //アイテムのノード
+        heartNode = SKNode()
+        scrollNode.addChild(heartNode)
 
         // 各種スプライトを生成する処理をメソッドに分割
         setupGround()
@@ -156,13 +160,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // 自身を取り除くアクションを作成
         let removeHeart = SKAction.removeFromParent()
-        
+
         // 2つのアニメーションを順に実行するアクションを作成
         let heartAnimation = SKAction.sequence([moveHeart, removeHeart])
 
-        
+        // アイテムを生成するアクションを作成
+        let createHeartAnimation = SKAction.run({
+            
+            let heart = SKNode()
+            heart.position = CGPoint(x: self.frame.size.width + heartTexture.size().width / 2, y: 0)
+            heart.zPosition = -50 // 雲より手前、地面より奥
+            
+            //
+            let itemNode = SKSpriteNode(texture: heartTexture)
+            itemNode.position = CGPoint(x: 3, y: 3)
+            itemNode.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 3, height: 3))
+            itemNode.physicsBody?.isDynamic = false
+            itemNode.physicsBody?.categoryBitMask = self.itemCategory
+            itemNode.physicsBody?.contactTestBitMask = self.birdCategory
 
+            heart.addChild(itemNode)
+
+            heart.run(heartAnimation)
+
+            self.heartNode.addChild(heart)
         
+        })
+        
+        // 次のアイテム作成までの時間待ちのアクションを作成
+        let waitAnimation = SKAction.wait(forDuration: 2)
+        
+        // アイテムを作成->時間待ち->壁を作成を無限に繰り返すアクションを作成
+        let repeatForeverAnimation = SKAction.repeatForever(SKAction.sequence([createHeartAnimation, waitAnimation]))
+
+        heartNode.run(repeatForeverAnimation)
+        
+  
         
     }
     
@@ -329,6 +362,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 userDefaults.set(bestScore, forKey: "BEST")
                 userDefaults.synchronize()
             }
+            
+        } else if  (contact.bodyA.categoryBitMask & itemCategory) == itemCategory || (contact.bodyB.categoryBitMask & itemCategory) == itemCategory {
+            
+            print("itemGet")
+               item += 1
+               itemLabelNode.text = "Item:\(item)"
+            
+            
         } else {
             // 壁か地面と衝突した
             print("GameOver")
