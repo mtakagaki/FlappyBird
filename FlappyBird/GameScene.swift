@@ -58,6 +58,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         heartNode = SKNode()
         scrollNode.addChild(heartNode)
         
+        
 
         // 各種スプライトを生成する処理をメソッドに分割
         setupGround()
@@ -382,9 +383,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             itemLabelNode.text = "Item:\(item)"
             self.heartNode.removeFromParent()
             
-            let audioNode = SKAudioNode(fileNamed: "itemget")
-            addChild(audioNode)
-           
+            AudioNode()
+            //let play = SKAudioNode(fileNamed: "itemget")
+            //play.autoplayLooped = false
+            //self.addChild(play)
+            //play.run(SKAction.play())
+    
             
             heartNode = SKNode()
             scrollNode.addChild(heartNode)
@@ -405,6 +409,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.bird.speed = 0
             })
         }
+    }
+    
+  func AudioNode() {
+        let audioNode = SKAudioNode(fileNamed: "itemget")
+        audioNode.autoplayLooped = false
+        self.addChild(audioNode)
     }
     
     func restart() {
