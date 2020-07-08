@@ -58,8 +58,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         heartNode = SKNode()
         scrollNode.addChild(heartNode)
         
-        
-
         // 各種スプライトを生成する処理をメソッドに分割
         setupGround()
         setupCloud()
@@ -157,9 +155,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let heartTexture = SKTexture(imageNamed: "heart")
         heartTexture.filteringMode = .nearest
         
-        // 鳥の画像サイズを取得
-        let birdSize = SKTexture(imageNamed: "bird_a").size()
-        
         // 移動する距離を計算
         let movingDistance = CGFloat(self.frame.size.width + heartTexture.size().width + 50)
 
@@ -175,26 +170,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // アイテムを生成するアクションを作成
         let createHeartAnimation = SKAction.run({
             
-            let heart = SKNode()
-            
-            heart.position = CGPoint(x: self.frame.size.width + heartTexture.size().width / 10, y: self.frame.size.width + heartTexture.size().width / 50)
-            heart.zPosition = -50 // 雲より手前、地面より奥
-            
-            //
             let itemNode = SKSpriteNode(texture: heartTexture)
+            
             itemNode.size = CGSize(width: itemNode.size.width / 7, height: itemNode.size.height / 7)
-            itemNode.position = CGPoint(x: birdSize.width / 3, y: birdSize.width / 2)
+            
             itemNode.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 5, height: 5))
             itemNode.physicsBody?.isDynamic = false
             itemNode.physicsBody?.categoryBitMask = self.itemCategory
             itemNode.physicsBody?.contactTestBitMask = self.birdCategory
             
-
-            heart.addChild(itemNode)
-
-            heart.run(heartAnimation)
-
-            self.heartNode.addChild(heart)
+            itemNode.position = CGPoint(x: self.frame.size.width + heartTexture.size().width / 10, y: self.frame.size.width + heartTexture.size().width / 50)
+            itemNode.zPosition = -50 // 雲より手前、地面より奥
+            
+            itemNode.run(heartAnimation)
+            self.heartNode.addChild(itemNode)
         
         })
         
@@ -211,89 +200,88 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setupWall() {
-           // 壁の画像を読み込む
-           let wallTexture = SKTexture(imageNamed: "wall")
-           wallTexture.filteringMode = .linear
+        // 壁の画像を読み込む
+        let wallTexture = SKTexture(imageNamed: "wall")
+        wallTexture.filteringMode = .linear
 
-           // 移動する距離を計算
-           let movingDistance = CGFloat(self.frame.size.width + wallTexture.size().width)
+        // 移動する距離を計算
+        let movingDistance = CGFloat(self.frame.size.width + wallTexture.size().width)
 
-           // 画面外まで移動するアクションを作成
-           let moveWall = SKAction.moveBy(x: -movingDistance, y: 0, duration:4)
+        // 画面外まで移動するアクションを作成
+        let moveWall = SKAction.moveBy(x: -movingDistance, y: 0, duration:4)
 
-           // 自身を取り除くアクションを作成
-           let removeWall = SKAction.removeFromParent()
+        // 自身を取り除くアクションを作成
+        let removeWall = SKAction.removeFromParent()
 
-           // 2つのアニメーションを順に実行するアクションを作成
-           let wallAnimation = SKAction.sequence([moveWall, removeWall])
+        // 2つのアニメーションを順に実行するアクションを作成
+        let wallAnimation = SKAction.sequence([moveWall, removeWall])
 
-           // 鳥の画像サイズを取得
-           let birdSize = SKTexture(imageNamed: "bird_a").size()
+        // 鳥の画像サイズを取得
+        let birdSize = SKTexture(imageNamed: "bird_a").size()
 
-           // 鳥が通り抜ける隙間の長さを鳥のサイズの3倍とする
-           let slit_length = birdSize.height * 3
+        // 鳥が通り抜ける隙間の長さを鳥のサイズの3倍とする
+        let slit_length = birdSize.height * 3
 
-           // 隙間位置の上下の振れ幅を鳥のサイズの3倍とする
-           let random_y_range = birdSize.height * 3
+        // 隙間位置の上下の振れ幅を鳥のサイズの3倍とする
+        let random_y_range = birdSize.height * 3
 
-           // 下の壁のY軸下限位置(中央位置から下方向の最大振れ幅で下の壁を表示する位置)を計算
-           let groundSize = SKTexture(imageNamed: "ground").size()
-           let center_y = groundSize.height + (self.frame.size.height - groundSize.height) / 2
-           let under_wall_lowest_y = center_y - slit_length / 2 - wallTexture.size().height / 2 - random_y_range / 2
+        // 下の壁のY軸下限位置(中央位置から下方向の最大振れ幅で下の壁を表示する位置)を計算
+        let groundSize = SKTexture(imageNamed: "ground").size()
+        let center_y = groundSize.height + (self.frame.size.height - groundSize.height) / 2
+        let under_wall_lowest_y = center_y - slit_length / 2 - wallTexture.size().height / 2 - random_y_range / 2
 
-           // 壁を生成するアクションを作成
-           let createWallAnimation = SKAction.run({
-               // 壁関連のノードを乗せるノードを作成
-               let wall = SKNode()
-               wall.position = CGPoint(x: self.frame.size.width + wallTexture.size().width / 2, y: 0)
-               wall.zPosition = -50 // 雲より手前、地面より奥
+        // 壁を生成するアクションを作成
+        let createWallAnimation = SKAction.run({
+            // 壁関連のノードを乗せるノードを作成
+            let wall = SKNode()
+            wall.position = CGPoint(x: self.frame.size.width + wallTexture.size().width / 2, y: 0)
+            wall.zPosition = -50 // 雲より手前、地面より奥
 
-               // 0〜random_y_rangeまでのランダム値を生成
-               let random_y = CGFloat.random(in: 0..<random_y_range)
-               // Y軸の下限にランダムな値を足して、下の壁のY座標を決定
-               let under_wall_y = under_wall_lowest_y + random_y
+            // 0〜random_y_rangeまでのランダム値を生成
+            let random_y = CGFloat.random(in: 0..<random_y_range)
+            // Y軸の下限にランダムな値を足して、下の壁のY座標を決定
+            let under_wall_y = under_wall_lowest_y + random_y
 
-               // 下側の壁を作成
-               let under = SKSpriteNode(texture: wallTexture)
-               under.position = CGPoint(x: 0, y: under_wall_y)
+            // 下側の壁を作成
+            let under = SKSpriteNode(texture: wallTexture)
+            under.position = CGPoint(x: 0, y: under_wall_y)
             
-               // スプライトに物理演算を設定する
-               under.physicsBody = SKPhysicsBody(rectangleOf: wallTexture.size())
-               under.physicsBody?.categoryBitMask = self.wallCategory
+            // スプライトに物理演算を設定する
+            under.physicsBody = SKPhysicsBody(rectangleOf: wallTexture.size())
+            under.physicsBody?.categoryBitMask = self.wallCategory
 
-               // 衝突の時に動かないように設定する
-               under.physicsBody?.isDynamic = false
-    
-
-               wall.addChild(under)
-
-               // 上側の壁を作成
-               let upper = SKSpriteNode(texture: wallTexture)
-               upper.position = CGPoint(x: 0, y: under_wall_y + wallTexture.size().height + slit_length)
+            // 衝突の時に動かないように設定する
+            under.physicsBody?.isDynamic = false
             
-              // スプライトに物理演算を設定する
-              upper.physicsBody = SKPhysicsBody(rectangleOf: wallTexture.size())
-              upper.physicsBody?.categoryBitMask = self.wallCategory
+            wall.addChild(under)
 
-              // 衝突の時に動かないように設定する
-              upper.physicsBody?.isDynamic = false
-
-               wall.addChild(upper)
+            // 上側の壁を作成
+            let upper = SKSpriteNode(texture: wallTexture)
+            upper.position = CGPoint(x: 0, y: under_wall_y + wallTexture.size().height + slit_length)
             
-              // スコアアップ用のノード
-              let scoreNode = SKNode()
-              scoreNode.position = CGPoint(x: upper.size.width + birdSize.width / 2, y: self.frame.height / 2)
-              scoreNode.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: upper.size.width, height: self.frame.size.height))
-              scoreNode.physicsBody?.isDynamic = false
-              scoreNode.physicsBody?.categoryBitMask = self.scoreCategory
-              scoreNode.physicsBody?.contactTestBitMask = self.birdCategory
+            // スプライトに物理演算を設定する
+            upper.physicsBody = SKPhysicsBody(rectangleOf: wallTexture.size())
+            upper.physicsBody?.categoryBitMask = self.wallCategory
 
-              wall.addChild(scoreNode)
+            // 衝突の時に動かないように設定する
+            upper.physicsBody?.isDynamic = false
 
-              wall.run(wallAnimation)
+            wall.addChild(upper)
+            
+            // スコアアップ用のノード
+            let scoreNode = SKNode()
+            scoreNode.position = CGPoint(x: upper.size.width + birdSize.width / 2, y: self.frame.height / 2)
+            scoreNode.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: upper.size.width, height: self.frame.size.height))
+            scoreNode.physicsBody?.isDynamic = false
+            scoreNode.physicsBody?.categoryBitMask = self.scoreCategory
+            scoreNode.physicsBody?.contactTestBitMask = self.birdCategory
 
-              self.wallNode.addChild(wall)
-           })
+            wall.addChild(scoreNode)
+
+            wall.run(wallAnimation)
+
+            self.wallNode.addChild(wall)
+        })
 
            // 次の壁作成までの時間待ちのアクションを作成
            let waitAnimation = SKAction.wait(forDuration: 2)
@@ -302,7 +290,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
            let repeatForeverAnimation = SKAction.repeatForever(SKAction.sequence([createWallAnimation, waitAnimation]))
 
            wallNode.run(repeatForeverAnimation)
-       }
+    }
     
     func setupBird() {
         // 鳥の画像を2種類読み込む
@@ -381,19 +369,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("itemGet")
             item += 1
             itemLabelNode.text = "Item:\(item)"
-            self.heartNode.removeFromParent()
+            contact.bodyA.node?.removeFromParent()
             
-            AudioNode()
-            //let play = SKAudioNode(fileNamed: "itemget")
-            //play.autoplayLooped = false
-            //self.addChild(play)
-            //play.run(SKAction.play())
-    
-            
-            heartNode = SKNode()
-            scrollNode.addChild(heartNode)
-            setupHeart()
-            
+            audioNode()
             
         } else {
             // 壁か地面と衝突した
@@ -411,10 +389,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-  func AudioNode() {
-        let audioNode = SKAudioNode(fileNamed: "itemget")
-        audioNode.autoplayLooped = false
-        self.addChild(audioNode)
+  func audioNode() {
+    let audio = SKAction.playSoundFileNamed("itemgetsea.mp3", waitForCompletion: true)
+    self.run(audio)
     }
     
     func restart() {

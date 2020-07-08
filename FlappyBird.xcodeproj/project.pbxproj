@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		210E252324B60895001D8A95 /* itemgetsea.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 210E252224B60894001D8A95 /* itemgetsea.mp3 */; };
 		B8822E0924A8A7CC00D05406 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8822E0824A8A7CC00D05406 /* AppDelegate.swift */; };
 		B8822E0B24A8A7CC00D05406 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8822E0A24A8A7CC00D05406 /* SceneDelegate.swift */; };
 		B8822E0D24A8A7CC00D05406 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8822E0C24A8A7CC00D05406 /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		210E252224B60894001D8A95 /* itemgetsea.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = itemgetsea.mp3; sourceTree = "<group>"; };
 		B8822E0524A8A7CC00D05406 /* FlappyBird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlappyBird.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8822E0824A8A7CC00D05406 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B8822E0A24A8A7CC00D05406 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				B8822E1C24A8AAA700D05406 /* GameScene.swift */,
 				B8822E0E24A8A7CC00D05406 /* Main.storyboard */,
 				B8822E1124A8A7CF00D05406 /* Assets.xcassets */,
+				210E252224B60894001D8A95 /* itemgetsea.mp3 */,
 				B8822E1324A8A7CF00D05406 /* LaunchScreen.storyboard */,
 				B8822E1624A8A7CF00D05406 /* Info.plist */,
 			);
@@ -129,6 +132,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8822E1524A8A7CF00D05406 /* LaunchScreen.storyboard in Resources */,
+				210E252324B60895001D8A95 /* itemgetsea.mp3 in Resources */,
 				B8822E1224A8A7CF00D05406 /* Assets.xcassets in Resources */,
 				B8822E1024A8A7CC00D05406 /* Main.storyboard in Resources */,
 			);
